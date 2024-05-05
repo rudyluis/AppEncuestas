@@ -16,8 +16,8 @@ from streamlit_option_menu import option_menu
 from streamlit_extras.metric_cards import style_metric_cards
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import Estudiante,Sede,Carrera,Pais,Ciudad,EstadoCivil, filtro_all_generico_combo
-from analisis_dinamico import AnalisiDinamico
+from models import Estudiante,Sede,Carrera,Pais,Ciudad,EstadoCivil,filtro_all_generico, filtro_all_generico_combo
+from analisis_dinamico import AnalisisDinamico
 def main():
 	"""Simple Login App"""
 	imagen = "logo.png"
@@ -43,8 +43,8 @@ def main():
 			default_index=0, #option
 			orientation="vertical", )
 	if choice == "Analisis Dinamico":
-		AnalisiDinamico(st)
-
+		AnalisisDinamico(st)
+		
 	elif choice == "Resultados":
 		st.subheader('📃 Resultados')
 	elif choice == "Matriz de Correlacion":	

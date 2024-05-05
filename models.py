@@ -3,9 +3,9 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Date, Numeric, Text,
 from sqlalchemy.orm import relationship, declarative_base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
-##engine= create_engine('postgresql://postgres:123456@localhost/encuestas')
+engine= create_engine('postgresql://postgres:123456@localhost/encuestas')
 
-engine= create_engine('postgresql://bdencuestasunivalle_user:pWB2M9UReSOqeNYzI9qsztYaKIVUzk76@dpg-coe6k2i0si5c739bojmg-a.oregon-postgres.render.com:5432/bdencuestasunivalle')
+##engine= create_engine('postgresql://bdencuestasunivalle_user:pWB2M9UReSOqeNYzI9qsztYaKIVUzk76@dpg-coe6k2i0si5c739bojmg-a.oregon-postgres.render.com:5432/bdencuestasunivalle')
 
 #Crea una sesion
 Session= sessionmaker(bind=engine)
@@ -48,7 +48,6 @@ class Estudiante(Base):
     ci = Column(String(255), unique=True)
     sexo = Column (Integer)
     fecha_nacimiento = Column (Date)
-    ciudad_procedencia = Column (String(255))
     edad = Column(Integer)
     telefono = Column(String(20))
     celular = Column(String(20))
@@ -155,7 +154,7 @@ class postgrado(Base):
     id_postgrado =Column(Integer,primary_key=True)
     nombre_postgrado = Column(String(50), nullable=False)
 
-def filtro_busqueda_generico(session, nombre_tabla, nombre_id, valor_buscar):
+def filtro_busqueda_generico( nombre_tabla, nombre_id, valor_buscar):
     # Consultar la tabla y filtrar por el nombre_id y valor_buscar
     registros = session.query(nombre_tabla).filter_by(**{nombre_id: valor_buscar}).all()
     
@@ -177,7 +176,7 @@ def filtro_all_generico_combo(nombre_tabla, campo):
 
     return valores
 
-def filtro_all_generico(session, nombre_tabla):
+def filtro_all_generico(nombre_tabla):
     # Consultar la tabla
     registros = session.query(nombre_tabla).all()
 
@@ -185,4 +184,23 @@ def filtro_all_generico(session, nombre_tabla):
     registros_dict = [{columna: getattr(registro, columna) for columna in registro.__table__.columns.keys()} for registro in registros]
     return registros_dict
 
+def filtro_busqueda_generico_varios(nombre_tabla, filtros):
+    # Construir la consulta base
+    query = session.query(nombre_tabla)
+
+    # Aplicar filtros dinámicamente
+    for campo, valor in filtros.items():
+        query = query.filter(getattr(nombre_tabla, campo) == valor)
+
+    # Ejecutar la consulta
+    registros = query.all()
+
+    # Verificar si se encontraron registros
+    if registros:
+        # Convertir los registros a una lista de diccionarios
+        registros_dict = [{columna: getattr(registro, columna) for columna in registro.__table__.columns.keys()} for registro in registros]
+        return registros_dict
+    else:
+        print("No se encontraron registros.")
+        return None
 
