@@ -3,7 +3,9 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Date, Numeric, Text,
 from sqlalchemy.orm import relationship, declarative_base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
-engine= create_engine('postgresql://postgres:123456@localhost/encuestas')
+##engine= create_engine('postgresql://postgres:123456@localhost/encuestas')
+
+engine= create_engine('postgresql://bdencuestasunivalle_user:pWB2M9UReSOqeNYzI9qsztYaKIVUzk76@dpg-coe6k2i0si5c739bojmg-a.oregon-postgres.render.com:5432/bdencuestasunivalle')
 
 #Crea una sesion
 Session= sessionmaker(bind=engine)
