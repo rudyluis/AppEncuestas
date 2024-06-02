@@ -1,53 +1,48 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Date, Numeric, Text, Sequence
-
-from sqlalchemy.orm import relationship, declarative_base
+from sqlalchemy import Column, Integer, String, ForeignKey, Date, Sequence, text
+from sqlalchemy.orm import relationship, declarative_base, sessionmaker
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session
-engine= create_engine('postgresql://postgres:123456@localhost/encuestas')
 
-##engine= create_engine('postgresql://bdencuestasunivalle_user:pWB2M9UReSOqeNYzI9qsztYaKIVUzk76@dpg-coe6k2i0si5c739bojmg-a.oregon-postgres.render.com:5432/bdencuestasunivalle')
+# Conexión a la base de datos
+engine = create_engine('postgresql://bdencuestasunivalle_user:pWB2M9UReSOqeNYzI9qsztYaKIVUzk76@dpg-coe6k2i0si5c739bojmg-a.oregon-postgres.render.com:5432/bdencuestasunivalle')
+Session = sessionmaker(bind=engine)
+session = Session()
 
-#Crea una sesion
-Session= sessionmaker(bind=engine)
-session= Session()
+Base = declarative_base()
 
-
-Base= declarative_base()
-
-
+# Definición de tablas
 class Carrera(Base):
-    __tablename__="carrera"
-    id_carrera= Column(Integer,primary_key=True)
-    nombre_carrera= Column(String(255),nullable=False)
+    __tablename__ = "carrera"
+    id_carrera = Column(Integer, primary_key=True)
+    nombre_carrera = Column(String(255), nullable=False)
 
 class Ciudad(Base):
-    __tablename__="ciudad"
-    id_ciudad= Column(Integer,primary_key=True)
-    nombre_ciudad= Column(String(255),nullable=False)
+    __tablename__ = "ciudad"
+    id_ciudad = Column(Integer, primary_key=True)
+    nombre_ciudad = Column(String(255), nullable=False)
 
 class EstadoCivil(Base):
-    __tablename__="estado_civil"
-    id_estado_civil= Column(Integer,primary_key=True)
-    nombre_estado_civil= Column(String(255),nullable=False)
+    __tablename__ = "estado_civil"
+    id_estado_civil = Column(Integer, primary_key=True)
+    nombre_estado_civil = Column(String(255), nullable=False)
 
 class Pais(Base):
-    __tablename__="pais"
-    id_pais= Column(Integer,primary_key=True)
-    nombre_pais= Column(String(255),nullable=False)
+    __tablename__ = "pais"
+    id_pais = Column(Integer, primary_key=True)
+    nombre_pais = Column(String(255), nullable=False)
 
 class Sede(Base):
-    __tablename__="sede"
-    id_sede= Column(Integer,primary_key=True)
-    nombre_sede= Column(String(255),nullable=False)
+    __tablename__ = "sede"
+    id_sede = Column(Integer, primary_key=True)
+    nombre_sede = Column(String(255), nullable=False)
 
 class Estudiante(Base):
-    __tablename__= 'estudiante'
-    id_estudiante = Column(Integer, primary_key = True)
-    nombre_completo = Column(String(255), nullable= False)
+    __tablename__ = 'estudiante'
+    id_estudiante = Column(Integer, primary_key=True)
+    nombre_completo = Column(String(255), nullable=False)
     gestion = Column(Integer)
     ci = Column(String(255), unique=True)
-    sexo = Column (Integer)
-    fecha_nacimiento = Column (Date)
+    sexo = Column(Integer)
+    fecha_nacimiento = Column(Date)
     edad = Column(Integer)
     telefono = Column(String(20))
     celular = Column(String(20))
@@ -66,13 +61,13 @@ class Estudiante(Base):
     estadocivil = relationship('EstadoCivil')
 
 class Trabajo(Base):
-    __tablename__='trabajo'
-    id_trabajo=Column(Integer,primary_key=True)
-    id_estudiante=Column(Integer,ForeignKey('estudiante.id_estudiante'),nullable=False)
-    trabaja_actualmente=Column(Integer,nullable=True)
-    lugar_trabajo_actual=Column(String(255),nullable=True)
-    fecha_ingreso_trabajo_actual=(Date)
-    estudiante=relationship('Estudiante')
+    __tablename__ = 'trabajo'
+    id_trabajo = Column(Integer, primary_key=True)
+    id_estudiante = Column(Integer, ForeignKey('estudiante.id_estudiante'), nullable=False)
+    trabaja_actualmente = Column(Integer, nullable=True)
+    lugar_trabajo_actual = Column(String(255), nullable=True)
+    fecha_ingreso_trabajo_actual = Column(Date)
+    estudiante = relationship('Estudiante')
 
 class AspectosPositivos(Base):
     __tablename__ = 'aspectos_positivos'
@@ -111,7 +106,6 @@ class GradoSatisfaccion(Base):
     id_grado_satisfaccion = Column(Integer, primary_key=True)
     satisfaccion = Column(String(255))
 
-    
 class SatisfaccionUnivalle(Base):
     __tablename__ = 'satisfaccion_univalle'
     id_satisfaccion_univalle = Column(Integer, primary_key=True)
@@ -133,74 +127,71 @@ class SatisfaccionUnivalle(Base):
     grado_satisfaccion_infraestructura = relationship("GradoSatisfaccion", foreign_keys=[satisfaccion_infraestructura])
     grado_satisfaccion_general_univalle = relationship("GradoSatisfaccion", foreign_keys=[satisfaccion_general_univalle])
 
-
-class programas_academicos(Base):
+class ProgramasAcademicos(Base):
     __tablename__ = 'programas_academicos'
-    id_programa_academico =Column(Integer,primary_key=True)
-    id_estudiante = Column(Integer,ForeignKey('estudiante.id_estudiante'), nullable=False) 
+    id_programa_academico = Column(Integer, primary_key=True)
+    id_estudiante = Column(Integer, ForeignKey('estudiante.id_estudiante'), nullable=False)
     realizar_cursos_postgrado = Column(Integer)
-    conseguir_trabajo= Column(Integer)
+    conseguir_trabajo = Column(Integer)
     otro_plan = Column(String(40))
     diplomado = Column(Integer)
-    especialidad=Column(Integer)
+    especialidad = Column(Integer)
     maestria = Column(Integer)
-    id_diplomado = Column(Integer,ForeignKey('diplomado.id_diplomado'), nullable=False)  
-    id_especialidad = Column(Integer,ForeignKey('especialidad.id_especialidad'), nullable=False) 
-    id_maestria = Column(Integer,ForeignKey('maestria.id_maestria'), nullable=False) 
-    estudiante=relationship("Estudiante")
+    id_diplomado = Column(Integer, ForeignKey('diplomado.id_diplomado'), nullable=False)
+    id_especialidad = Column(Integer, ForeignKey('especialidad.id_especialidad'), nullable=False)
+    id_maestria = Column(Integer, ForeignKey('maestria.id_maestria'), nullable=False)
+    estudiante = relationship("Estudiante")
 
-class postgrado(Base):
+class Postgrado(Base):
     __tablename__ = 'postgrado'
-    id_postgrado =Column(Integer,primary_key=True)
+    id_postgrado = Column(Integer, primary_key=True)
     nombre_postgrado = Column(String(50), nullable=False)
 
-def filtro_busqueda_generico( nombre_tabla, nombre_id, valor_buscar):
-    # Consultar la tabla y filtrar por el nombre_id y valor_buscar
+# Funciones de filtrado
+def filtro_busqueda_generico(nombre_tabla, nombre_id, valor_buscar, session):
     registros = session.query(nombre_tabla).filter_by(**{nombre_id: valor_buscar}).all()
-    
-    # Verificar si se encontraron registros
     if registros:
-        # Devolver los registros como una lista de diccionarios
         registros_dict = [{columna: getattr(registro, columna) for columna in registro.__table__.columns.keys()} for registro in registros]
         return registros_dict
     else:
         print("No se encontraron registros.")
         return None
 
-def filtro_all_generico_combo(nombre_tabla, campo):
-    # Consultar la tabla y obtener los valores únicos en el campo especificado
+def filtro_all_generico_combo(nombre_tabla, campo, session):
     valores = session.query(getattr(nombre_tabla, campo)).distinct().order_by(campo).all()
-
-    # Convertir los resultados a una lista plana
     valores = [valor[0] for valor in valores]
-
     return valores
 
-def filtro_all_generico(nombre_tabla):
-    # Consultar la tabla
+def filtro_all_generico(nombre_tabla, session):
     registros = session.query(nombre_tabla).all()
-
-    # Devolver los registros como un diccionario
     registros_dict = [{columna: getattr(registro, columna) for columna in registro.__table__.columns.keys()} for registro in registros]
     return registros_dict
 
-def filtro_busqueda_generico_varios(nombre_tabla, filtros):
-    # Construir la consulta base
+def filtro_busqueda_generico_varios(nombre_tabla, filtros, session):
     query = session.query(nombre_tabla)
-
-    # Aplicar filtros dinámicamente
     for campo, valor in filtros.items():
         query = query.filter(getattr(nombre_tabla, campo) == valor)
-
-    # Ejecutar la consulta
     registros = query.all()
-
-    # Verificar si se encontraron registros
     if registros:
-        # Convertir los registros a una lista de diccionarios
         registros_dict = [{columna: getattr(registro, columna) for columna in registro.__table__.columns.keys()} for registro in registros]
         return registros_dict
     else:
         print("No se encontraron registros.")
         return None
 
+
+def listadoGeneralEstudiantes(session):
+    session
+    sql = """select * 
+        from estudiante_datos da
+        inner join estudiante_postgrado por on por.id_estudiante=da.id_estudiante
+        inner join estudiante_aspectos asp on asp.id_estudiante=da.id_estudiante
+        inner join estudiante_satisfaccion sat on sat.id_estudiante= da.id_estudiante
+        inner join estudiante_trabajo tra on tra.id_estudiante=da.id_estudiante;"""
+    
+    
+    result = session.execute(text(sql))
+    return result
+    
+    
+    
