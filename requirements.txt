@@ -13,4 +13,4 @@ seaborn
 matplotlib
 streamlit-extras
 SQLAlchemy
-psycopg2
+psycopg2-binary
