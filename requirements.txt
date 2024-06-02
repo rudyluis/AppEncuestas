@@ -9,10 +9,8 @@ numerize
 streamlit_option_menu
 streamlit-cards-templates
 plotly-express
-pygwalker
 seaborn
 matplotlib
 streamlit-extras
 SQLAlchemy
 psycopg2
-pygwalker
