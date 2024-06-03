@@ -17,6 +17,7 @@ def AnalisisDinamico(st, session):
 
     # Gráficos
     c1,c2=st.columns(2)
+    df['edad'] = df['edad'].fillna(df['edad'].mean())
     with c1: 
         st.subheader("Distribución de edades de los estudiantes")
         fig = px.histogram(df, x='edad', nbins=20, title='Distribución de Edades')
@@ -35,13 +36,13 @@ def AnalisisDinamico(st, session):
         st.write("### Número de estudiantes que trabajan actualmente")
         trabajos = filtro_all_generico(Trabajo, session)
         df_trabajos = pd.DataFrame(trabajos)
-        fig = px.pie(df_trabajos, names='trabaja_actualmente', title='Número de Estudiantes que Trabajan Actualmente', hole=0.3)
+        fig = px.pie(df, names='estado_trabaja', title='Número de Estudiantes que Trabajan Actualmente', hole=0.3)
         st.plotly_chart(fig)
     with c4:
         st.write("### Distribución de satisfacción general con Univalle")
         satisfaccion = filtro_all_generico(SatisfaccionUnivalle, session)
         df_satisfaccion = pd.DataFrame(satisfaccion)
-        fig = px.histogram(df_satisfaccion, x='satisfaccion_general_univalle', nbins=10, title='Distribución de Satisfacción General con Univalle')
+        fig = px.histogram(df, x='satisfaccion_general_univalle', nbins=10, title='Distribución de Satisfacción General con Univalle')
         st.plotly_chart(fig)
 
     c5,c6=st.columns(2)
@@ -49,11 +50,13 @@ def AnalisisDinamico(st, session):
         st.write("### Número de estudiantes que planean realizar un curso de posgrado")
         programas = filtro_all_generico(ProgramasAcademicos, session)
         df_programas = pd.DataFrame(programas)
-        fig = px.pie(df_programas, names='realizar_cursos_postgrado', title='Número de Estudiantes que Planean Realizar un Curso de Posgrado', hole=0.3)
+       ## fig = px.pie(df, names='cursos_postgrado', title='Número de Estudiantes que Planean Realizar un Curso de Posgrado', hole=0.3)
+        fig = px.histogram(df, x='cursos_postgrado', nbins=10, title='Número de Estudiantes que Planean Realizar un Curso de Posgrado')
+       
         st.plotly_chart(fig)
     with c6:
         st.write("### Proporción de estudiantes por estado civil")
-        fig = px.pie(df, names='id_estado_civil', title='Proporción de Estudiantes por Estado Civil', hole=0.3)
+        fig = px.pie(df, names='estado_civil', title='Proporción de Estudiantes por Estado Civil', hole=0.3)
         st.plotly_chart(fig)
     c7,c8=st.columns(2)
     with c7:
