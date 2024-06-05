@@ -14,6 +14,65 @@ def AnalisisDinamico(st, session):
         df.drop(columns=['id_estudiante'], inplace=True)
     st.write(df)
     ##df = pd.DataFrame(estudiantes)
+    #GRAFICO 1
+    # Calcular la distribución
+    satisfaction_distribution = df['satisfaccion_general_univalle'].value_counts().sort_index()
+    print(satisfaction_distribution)
+    satisfaction_percentage = (satisfaction_distribution / df['satisfaccion_general_univalle'].count()) * 100
+
+    # Crear la tabla de satisfacción
+    satisfaction_table = pd.DataFrame({
+        'Nivel de Satisfacción': satisfaction_distribution.index,
+        'Número de Estudiantes': satisfaction_distribution.values,
+        'Porcentaje (%)': satisfaction_percentage.values
+    })
+
+    # Streamlit app
+    st.title('Distribución de Satisfacción General')
+
+    st.subheader('Tabla 1: Distribución de Satisfacción General')
+    st.write(satisfaction_table)
+    st.subheader('Histograma de Satisfacción General')
+    fig = px.histogram(df, x='satisfaccion_general_univalle', nbins=5, labels={'satisfaccion_general_univalle':'Nivel de Satisfacción'}, title='Distribución de Satisfacción General')
+    fig.update_layout(xaxis_title='Nivel de Satisfacción', yaxis_title='Número de Estudiantes')
+    fig.update_traces(texttemplate='%{y}', textposition='outside', marker_color='lightskyblue')
+
+    st.plotly_chart(fig)
+
+    #GRAFICO 2
+    # Calcular la distribución de satisfacción por carrera
+    satisfaction_by_career = df.groupby(['carrera', 'satisfaccion_general_univalle']).size().reset_index(name='Número de Estudiantes')
+    print(satisfaction_by_career)
+    #satisfaction_by_career['Porcentaje'] = satisfaction_by_career.groupby('carrera')['Número de Estudiantes'].apply(lambda x: (x / x.sum()) * 100)
+
+    st.subheader('Tabla 2: Satisfacción por Carrera')
+    st.write(satisfaction_by_career)
+    # Gráfico de Barras de Satisfacción por Carrera
+    st.subheader('Gráfico de Barras de Satisfacción por Carrera')
+    fig2 = px.bar(satisfaction_by_career, x='carrera', y='Número de Estudiantes', color='satisfaccion_general_univalle', 
+                labels={'Número de Estudiantes':'Número de Estudiantes', 'SatisfaccionGeneralDesc':'Nivel de Satisfacción'}, 
+                title='Satisfacción por Carrera', barmode='group')
+    fig2.update_layout(xaxis_title='carrera', yaxis_title='Número de Estudiantes')
+    fig2.update_traces(texttemplate='%{y}', textposition='outside')
+    st.plotly_chart(fig2)
+
+  #GRAFICO 3
+    # Calcular la distribución de satisfacción por sede
+    satisfaction_by_sede = df.groupby(['sede', 'satisfaccion_general_univalle']).size().reset_index(name='Número de Estudiantes')
+
+    #satisfaction_by_career['Porcentaje'] = satisfaction_by_career.groupby('carrera')['Número de Estudiantes'].apply(lambda x: (x / x.sum()) * 100)
+
+    st.subheader('Tabla 3: Satisfacción por Sede')
+    st.write(satisfaction_by_sede)
+    # Gráfico de Barras de Satisfacción por Carrera
+    st.subheader('Gráfico de Barras de Satisfacción por Sede')
+    fig3 = px.bar(satisfaction_by_sede, x='sede', y='Número de Estudiantes', color='satisfaccion_general_univalle', 
+                labels={'Número de Estudiantes':'Número de Estudiantes', 'satisfaccion_general_univalle':'Nivel de Satisfacción'}, 
+                title='Satisfacción por Sede', barmode='group')
+    fig3.update_layout(xaxis_title='sede', yaxis_title='Número de Estudiantes')
+    fig3.update_traces(texttemplate='%{y}', textposition='outside')
+    st.plotly_chart(fig3)
+
 
     # Gráficos
     c1,c2=st.columns(2)
