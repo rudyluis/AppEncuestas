@@ -3,7 +3,7 @@ import plotly.express as px
 from models import Estudiante, Sede, Carrera, Pais, Ciudad, EstadoCivil, Trabajo, SatisfaccionUnivalle, GradoSatisfaccion, ProgramasAcademicos, filtro_all_generico_combo, filtro_all_generico,filtro_busqueda_generico,filtro_busqueda_generico_varios,listadoGeneralEstudiantes
 
 def AnalisisDinamico(st, session):
-    st.subheader("📈 Principal")
+    st.subheader("📈 Datos Principal")
 
  
     result= listadoGeneralEstudiantes(session)

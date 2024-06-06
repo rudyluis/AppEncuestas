@@ -21,7 +21,7 @@ def main():
                        layout="wide",
                        initial_sidebar_state="auto")
 
-    st.subheader("📈 Encuestas a Estudiantes Titulados - Univalle 2024")
+    st.title("📈 Encuestas a Estudiantes Titulados - Univalle 2024")
 
     with open('style.css') as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
@@ -45,12 +45,12 @@ def main():
     style_metric_cards("#f2f9aa", 3, "#CCC", 10, "#dc3545", True)
 
     col1, col2, col3 = st.columns(3)
-    with col1:
-        st.metric(label="✏️ Varones", value=4, delta="Min: 4")
-    with col2:
-        st.metric(label="🖇️ Mujeres", value=4, delta="")
-    with col3:
-        st.metric(label="📋 Cantidad de Registros", value=4, delta="Max: 4")
+    ##with col1:
+      ##  st.metric(label="✏️ Varones", value=4, delta="Min: 4")
+    ##with col2:
+      ##  st.metric(label="🖇️ Mujeres", value=4, delta="")
+    ##with col3:
+      ##  st.metric(label="📋 Cantidad de Registros", value=4, delta="Max: 4")
 
     #### columnas de seleccion filtros
        # Sedes
