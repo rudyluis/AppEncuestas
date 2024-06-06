@@ -73,7 +73,59 @@ def AnalisisDinamico(st, session):
     fig3.update_traces(texttemplate='%{y}', textposition='outside')
     st.plotly_chart(fig3)
 
+    ##GRAFICO 4
+    satisfaction_by_sede = df.groupby(['sede', 'satisfaccion_general_univalle']).size().reset_index(name='Número de Estudiantes')
+    # Calculate distribution of interest in postgraduate studies
+    interest_counts = df['cursos_postgrado'].value_counts().reset_index()
+    interest_counts.columns = ['Interes', 'Count']
 
+    # Calculate percentages
+    interest_counts['Percentage'] = (interest_counts['Count'] / interest_counts['Count'].sum()) * 100
+
+    # Plot pie chart
+    fig4 = px.pie(interest_counts, values='Count', names='Interes', title='Distribución General de Interés en Posgrado', labels={'Interes': 'Interés en Posgrado', 'Count': 'Número de Estudiantes'}, hole=0.3)
+
+    # Streamlit app
+    st.title('Análisis de Interés en Posgrado')
+    st.write('Se analizó el interés general de los estudiantes en tomar un posgrado en la misma universidad.')
+
+    # Display table
+    st.write('### Tabla 4: Distribución General de Interés en Posgrado')
+    st.write(interest_counts)
+
+    # Display pie chart
+    st.plotly_chart(fig4)
+
+    #GRAFICO 5
+     ##GRAFICO 4
+
+    df_grouped = df.groupby(['cursos_postgrado', 'satisfaccion_general_univalle']).size().reset_index(name='Cantidad')
+
+    # Calcular porcentajes
+    df_grouped['Porcentaje'] = df_grouped['Cantidad'] / df_grouped['Cantidad'].sum() * 100
+
+    # Crear gráfico de dispersión
+    # Paso 3: Crear gráfico de dispersión
+# Paso 3: Crear gráfico de barras con etiquetas
+    fig5 = px.bar(df_grouped, x='satisfaccion_general_univalle', y='Cantidad', color='cursos_postgrado',
+                labels={'satisfaccion_general_univalle': 'Nivel de Satisfacción', 'Cantidad': 'Número de Estudiantes'},
+                title='Relación entre Satisfacción e Interés en Posgrado',
+                barmode='group',
+                text='Cantidad')
+
+    # Ajustar el layout para mostrar las etiquetas
+    fig5.update_traces(texttemplate='%{text:.2s}', textposition='outside')
+
+    # Configurar Streamlit
+    st.title("Relación entre Satisfacción e Interés en Posgrado")
+    st.write("Se analizó la relación entre el nivel de satisfacción de los estudiantes y su interés en tomar un posgrado en la universidad.")
+
+    # Mostrar tabla
+    st.write("### Tabla 7: Relación entre Satisfacción e Interés en Posgrado")
+    st.dataframe(df_grouped)
+
+    # Mostrar gráfico
+    st.plotly_chart(fig5)
     # Gráficos
     c1,c2=st.columns(2)
     df['edad'] = df['edad'].fillna(df['edad'].mean())
