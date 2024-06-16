@@ -2,22 +2,61 @@ import pandas as pd
 import plotly.express as px
 from models import Estudiante, Sede, Carrera, Pais, Ciudad, EstadoCivil, Trabajo, SatisfaccionUnivalle, GradoSatisfaccion, ProgramasAcademicos, filtro_all_generico_combo, filtro_all_generico,filtro_busqueda_generico,filtro_busqueda_generico_varios,listadoGeneralEstudiantes
 
-def AnalisisDinamico(st, session):
+def AnalisisDinamico(st, session,filtros):
     st.subheader("📈 Datos Principal")
 
- 
+    
     result= listadoGeneralEstudiantes(session)
     
     df = pd.DataFrame(result.fetchall(), columns=result.keys())
     df = df.loc[:, ~df.columns.duplicated()]
     if 'id_estudiante' in df.columns:
         df.drop(columns=['id_estudiante'], inplace=True)
+    ### filtrar por SEDES    
+    sedes=filtros['sedes']
+    df = df[df['sede'].isin(sedes)]    
+    ### filtrar GENEROS
+    genero= filtros['genero']
+    if(genero=='Todos'):
+        genero=['M','F']
+    if(genero=='Masculino'):
+        genero=['M']
+    if(genero=='Femenino'):
+        genero=['F']        
+    df = df[df['sexo'].isin(genero)]   
+
+    ### CARRERA
+    carrera=filtros['carrera'] 
+    if not carrera:
+        carrera = filtro_all_generico_combo(Carrera, 'nombre_carrera', session)
+
+    df = df[df['carrera'].isin(carrera)]  
+    ###Gestion
+    gestion=filtros['gestion'] 
+
+    min_gestion, max_gestion = gestion
+    df = df[(df['gestion'] >= min_gestion) & (df['gestion'] <= max_gestion)]
+    ## Estado Civil
+    estado_civil= filtros['estado_civil']
+    df = df[df['estado_civil'].isin(estado_civil)]   
+    
+    #3 Pais
+    pais= filtros['pais']
+    
+    if not pais:
+        pais = filtro_all_generico_combo(Pais, 'nombre_pais', session)
+    ##print(pais)
+    df = df[df['pais'].isin(pais)]  
+    
+    ### Rango EDAD
+    edad= filtros['edad']
+    min_edad, max_edad = edad
+    df = df[(df['edad'] >= min_edad) & (df['edad'] <= max_edad)]
     st.write(df)
     ##df = pd.DataFrame(estudiantes)
     #GRAFICO 1
     # Calcular la distribución
     satisfaction_distribution = df['satisfaccion_general_univalle'].value_counts().sort_index()
-    print(satisfaction_distribution)
     satisfaction_percentage = (satisfaction_distribution / df['satisfaccion_general_univalle'].count()) * 100
 
     # Crear la tabla de satisfacción
@@ -42,7 +81,6 @@ def AnalisisDinamico(st, session):
     #GRAFICO 2
     # Calcular la distribución de satisfacción por carrera
     satisfaction_by_career = df.groupby(['carrera', 'satisfaccion_general_univalle']).size().reset_index(name='Número de Estudiantes')
-    print(satisfaction_by_career)
     #satisfaction_by_career['Porcentaje'] = satisfaction_by_career.groupby('carrera')['Número de Estudiantes'].apply(lambda x: (x / x.sum()) * 100)
 
     st.subheader('Tabla 2: Satisfacción por Carrera')

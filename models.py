@@ -187,7 +187,8 @@ def listadoGeneralEstudiantes(session):
         inner join estudiante_postgrado por on por.id_estudiante=da.id_estudiante
         inner join estudiante_aspectos asp on asp.id_estudiante=da.id_estudiante
         inner join estudiante_satisfaccion sat on sat.id_estudiante= da.id_estudiante
-        inner join estudiante_trabajo tra on tra.id_estudiante=da.id_estudiante;"""
+        inner join estudiante_trabajo tra on tra.id_estudiante=da.id_estudiante
+        order by da.id_estudiante ;"""
     
     
     result = session.execute(text(sql))
